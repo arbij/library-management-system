@@ -23,6 +23,98 @@ import{
 from
 '../exports/print.mjs'
 
+// import{
+// 	createOpencode
+// }
+// from
+// '@opencode-ai/sdk'
+
+let
+ai_client
+=
+	(
+		await
+			(
+				await
+					import(
+						'@opencode-ai/sdk'
+					)
+			)
+			.createOpencode()
+	)
+	.client
+	
+async function
+prompt(
+	session_id,
+	text
+){
+	let
+	response=
+		await
+			ai_client
+			.session
+			.prompt({
+				path:{
+					id:
+					session_id
+				},
+				
+				body:{
+					model:{
+						providerID:
+						'opencode',
+						
+						modelID:
+						'deepseek-v4-flash-free',
+						
+						options:{
+							reasoningEffort:
+							'high'
+						}
+					},
+					
+					parts:[
+						{
+							type:
+							'text',
+							
+							text
+						}
+					],
+				},
+			});
+	
+	let
+	result=
+	''
+	
+	for(
+		let
+		part
+		of
+			response
+			.data
+			.parts
+	){
+		if(
+			part
+			.type
+			===
+			'text'
+		){
+			result
+			+=
+				part
+				.text
+		}
+	}
+	
+	return(
+		result
+	)
+}
+
 let
 database
 =
@@ -299,7 +391,8 @@ new
 			
 			let
 				user_id,
-				admin
+				admin,
+				ai_session_id
 			
 			client
 			.on(
@@ -838,6 +931,81 @@ new
 										return
 								}
 							}
+							
+							case 'ai':
+								if(
+									ai_session_id
+									===
+									undefined
+								){
+									ai_session_id
+									=
+										(
+											await(
+												ai_client
+												.session
+												.create()
+											)
+										)
+										.data
+										.id
+								}
+																
+								let
+								db_data
+								
+								if(
+									admin
+								){
+									db_data=
+										await
+											prisma
+											.users
+											.findMany({
+												select:{
+													name: true,
+													email: true,
+													books:{
+														omit:{
+															id: true,
+															user_id: true
+														}
+													}
+												}
+											})
+								}
+								else{
+									db_data=
+										await
+											prisma
+											.books
+											.findMany({
+												where:{
+													user_id
+												},
+												
+												omit:{
+													id: true,
+													user_id: true
+												}
+											})
+								}
+								
+								respond(
+									await
+										prompt(
+											ai_session_id,
+											
+											request_data
+											.query
+											+
+												JSON
+												.stringify(
+													db_data
+												)
+										)
+								)
+							break
 							
 							default:
 								respond(

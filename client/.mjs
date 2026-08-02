@@ -849,6 +849,49 @@ append(
 	br()
 )
 
+let
+ai_query=
+	create_element(
+		'input'
+	)
+
+append(
+	ai_query,
+	
+	' ',
+	
+	create_element(
+		'button',
+		
+		{
+			innerHTML:
+			'ask ai',
+			
+			onclick(){
+				display(
+					send_request(
+						'ai',
+						
+						{
+							query:
+								ai_query
+								.value
+						}
+					)
+				)
+			}
+		}
+	),
+	
+	' (might take a few seconds, please be patient!) (remembers past messages in the same session!)'
+)
+
+result
+.style
+.whiteSpace
+=
+'pre-wrap'
+
 append(
 	result
 )
