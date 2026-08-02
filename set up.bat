@@ -8,3 +8,5 @@ popd
 
 cd "databases\test\prisma"
 "apply changes.bat"
+
+pause

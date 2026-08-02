@@ -7,3 +7,5 @@ pushd "../../databases/test/reset"
 popd
 
 node .mjs
+
+pause
