@@ -1,0 +1,9 @@
+# here .env is comitted for the purpose of easier set up. it should be not be commited in real projects.
+
+node_modules
+
+databases/test/.db
+databases/test/prisma/generated
+
+databases/prod/.db
+databases/prod/prisma/generated

@@ -1,0 +1,32 @@
+datasource db {
+	provider="sqlite"
+}
+
+generator client {
+	output="generated"
+	provider="prisma-client-js"
+}
+
+model Users{
+	id Int @id @default(autoincrement())
+	
+	name String @unique
+	email String @unique
+	password String
+	
+	books Books[]
+}
+
+model Books{
+	id Int @id @default(autoincrement())
+	
+	title String
+	author String
+	genre String
+	status String @default("reading")
+	
+	user Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
+	user_id Int
+	
+	@@unique([user_id, title])
+}

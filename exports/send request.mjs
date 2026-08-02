@@ -1,0 +1,47 @@
+let
+node
+=
+typeof
+window
+===
+'undefined'
+
+export
+	let
+	server
+	=
+		(
+			await
+				import(
+					node
+					?
+					'socket.io-client'
+					:
+					'/socket.io/socket.io.esm.min.js'
+				)
+		)
+		.io(
+			node
+			?
+			'http://localhost:5001'
+			:
+			undefined
+		)
+
+export
+	function
+	send_request(
+		type,
+		
+		data=
+		{}
+	){
+		return(
+			server
+			.emitWithAck(
+				'request',
+				type,
+				data
+			)
+		)
+	}
