@@ -1,9 +1,10 @@
 {
 	"type": "module",
 	"dependencies": {
-		"@opencode-ai/sdk": "^1.18.11",
+		"@ai-sdk/openai-compatible": "^3.0.22",
 		"@prisma/adapter-better-sqlite3": "^7.8.0",
 		"@prisma/client": "^7.9.0",
+		"ai": "^7.0.51",
 		"bcrypt": "^6.0.0",
 		"better-sqlite3": "^12.11.1",
 		"socket.io": "^4.8.3",

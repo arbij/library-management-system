@@ -1,6 +1,7 @@
 import{
 	equal,
-	deepEqual
+	deepEqual,
+	notEqual
 }
 from 'assert/strict';
 
@@ -28,6 +29,7 @@ equal(
 	await
 		send_request(
 			'new book',
+			
 			{
 				title: 'Harry Potter',
 				
@@ -676,16 +678,96 @@ equal(
 			'log in',
 			
 			{
-				name: 'Jeane',	
-				password: '87654321'
+				name:
+				'Jeane',	
+				
+				password:
+				'87654321'
 			}
 		),
 	
 	'user'
 )
 
+equal(
+	await
+		send_request(
+			'new book',
+			
+			{
+				title:
+				'The old man and the sea',
+				
+				data:
+				{
+					author: 'ernest hemingway',
+					genre: 'philosophical',
+					status: 'completed',
+				}
+			}
+		),
+	
+	'success'
+)
+
 print(
-	'all tests passed!'
+	'all tests passed!',
+	'now testing ai...'
+)
+
+let
+query=
+	'can you recommend me a book?'
+
+print(
+	query
+)
+
+let
+ai_response=
+	await
+		send_request(
+			'ai',
+			
+			{
+				query
+			}
+		)
+
+notEqual(
+	ai_response,
+	'something went wrong'
+)
+
+print(
+	ai_response
+)
+
+query=
+	'what about a different genre?'
+
+print(
+	query
+)
+
+ai_response=
+	await
+		send_request(
+			'ai',
+			
+			{
+				query
+			}
+		)
+
+notEqual(
+	ai_response,
+	'something went wrong'
+)
+
+print(
+	'\n\n\n\n\n\n\n\n\n\n',
+	ai_response
 )
 
 server

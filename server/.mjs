@@ -23,92 +23,69 @@ import{
 from
 '../exports/print.mjs'
 
-// import{
-// 	createOpencode
-// }
-// from
-// '@opencode-ai/sdk'
-
 let
-ai_client
-=
+ai_model=
 	(
+		await
+			import(
+				'@ai-sdk/openai-compatible'
+			)
+	)
+	.createOpenAICompatible({
+		name:
+		'zen',
+		
+		baseURL:
+		'https://opencode.ai/zen/v1',
+		
+		apiKey:
+		'public'
+	})(
+		'mimo-v2.5-free'
+	)
+
+async function
+prompt_ai(
+	ai_session,
+	text
+){
+	ai_session
+	.push({
+		role:
+		'user',
+		
+		content:
+		text
+	})
+	
+	let{
+		text:
+		result
+	}
+	=
 		await
 			(
 				await
 					import(
-						'@opencode-ai/sdk'
+						'ai'
 					)
 			)
-			.createOpencode()
-	)
-	.client
-	
-async function
-prompt(
-	session_id,
-	text
-){
-	let
-	response=
-		await
-			ai_client
-			.session
-			.prompt({
-				path:{
-					id:
-					session_id
-				},
+			.generateText({
+				model:
+				ai_model,
 				
-				body:{
-					model:{
-						providerID:
-						'opencode',
-						
-						modelID:
-						'deepseek-v4-flash-free',
-						
-						options:{
-							reasoningEffort:
-							'high'
-						}
-					},
-					
-					parts:[
-						{
-							type:
-							'text',
-							
-							text
-						}
-					],
-				},
-			});
+				messages:
+				ai_session
+			})
 	
-	let
-	result=
-	''
-	
-	for(
-		let
-		part
-		of
-			response
-			.data
-			.parts
-	){
-		if(
-			part
-			.type
-			===
-			'text'
-		){
-			result
-			+=
-				part
-				.text
-		}
-	}
+	ai_session
+	.push({
+		role:
+		'assistant',
+		
+		content:
+		result
+	})
 	
 	return(
 		result
@@ -392,7 +369,7 @@ new
 			let
 				user_id,
 				admin,
-				ai_session_id
+				ai_session
 			
 			client
 			.on(
@@ -564,7 +541,7 @@ new
 									=
 									false
 									
-									respond(	
+									respond(
 										'user'
 									)
 									return
@@ -933,76 +910,60 @@ new
 							}
 							
 							case 'ai':
+								let{
+									query
+								}
+								=
+								request_data
+								
 								if(
-									ai_session_id
+									ai_session
 									===
 									undefined
 								){
-									ai_session_id
-									=
-										(
-											await(
-												ai_client
-												.session
-												.create()
-											)
-										)
-										.data
-										.id
-								}
-																
-								let
-								db_data
-								
-								if(
-									admin
-								){
-									db_data=
-										await
-											prisma
-											.users
-											.findMany({
-												select:{
-													name: true,
-													email: true,
-													books:{
-														omit:{
-															id: true,
-															user_id: true
+									ai_session=
+									[]
+									
+									query
+									+=
+										JSON.stringify(
+											await
+												prisma
+												.users
+												.findMany({
+													where:
+														admin
+														?
+														{}
+														:
+														{
+															id:
+															user_id
+														},
+													
+													select:
+													{
+														name: true,
+														email: true,
+														
+														books:
+														{
+															omit:
+															{
+																id: true,
+																user_id: true
+															}
 														}
 													}
-												}
-											})
-								}
-								else{
-									db_data=
-										await
-											prisma
-											.books
-											.findMany({
-												where:{
-													user_id
-												},
-												
-												omit:{
-													id: true,
-													user_id: true
-												}
-											})
+												})
+										)
 								}
 								
 								respond(
 									await
-										prompt(
-											ai_session_id,
-											
-											request_data
-											.query
-											+
-												JSON
-												.stringify(
-													db_data
-												)
+										prompt_ai(
+											ai_session,
+											query
 										)
 								)
 							break
