@@ -1,4 +1,4 @@
-Library management system with auth for users and admins
+Library management system with auth for users and admin
 
 Tech stack: Sqlite db with Prisma ORM, node.js with socket-io backend, vanilla javascript frontend
 
