@@ -852,11 +852,18 @@ append(
 let
 ai_query=
 	create_element(
-		'input'
+		'input',
+		
+		{
+			size:
+			100
+		}
 	)
 
 append(
 	ai_query,
+	
+	br(),
 	
 	' ',
 	
