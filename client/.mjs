@@ -129,11 +129,6 @@ append(
 )
 
 let
-auth_input_data
-=
-{}
-
-let
 auth_inputs
 =
 {}
@@ -193,9 +188,14 @@ for(
 	value
 }
 
+let
+auth_data
+=
+{}
+
 function
-get_input_data(){
-	auth_input_data
+get_auth_data(){
+	auth_data
 	=
 	{}
 	
@@ -205,7 +205,7 @@ get_input_data(){
 		in
 		auth_inputs
 	){
-		auth_input_data[
+		auth_data[
 			key
 		]
 		=
@@ -216,7 +216,7 @@ get_input_data(){
 	}
 	
 	return(
-		auth_input_data
+		auth_data
 	)
 }
 
@@ -249,7 +249,7 @@ register=
 							send_request(
 								'register',
 								
-								get_input_data()
+								get_auth_data()
 							)
 					
 					switch(
@@ -294,7 +294,7 @@ log_in=
 							send_request(
 								'log in',
 								
-								get_input_data()
+								get_auth_data()
 							)
 					
 					switch(
@@ -335,13 +335,13 @@ for(
 	let
 	key
 	in
-	auth_input_data
+	auth_data
 ){
 	localStorage[
 		key
 	]
 	=
-		auth_input_data[
+		auth_data[
 			key
 		]
 }
@@ -497,7 +497,10 @@ if(
 				'update a user',
 				
 				onclick(){
-					let new_data = {}
+					let
+					new_data
+					=
+					{}
 					
 					for(
 						let
@@ -729,8 +732,7 @@ append(
 			
 			onclick(){
 				let
-				new_data
-				=
+				new_data=
 				{}
 				
 				for(
@@ -792,8 +794,7 @@ append(
 			
 			onclick(){
 				let
-				new_data
-				=
+				new_data=
 				{}
 				
 				for(

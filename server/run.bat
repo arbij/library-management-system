@@ -2,4 +2,4 @@
 
 cls
 
-node .mjs
+node server.mjs

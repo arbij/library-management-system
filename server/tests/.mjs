@@ -49,7 +49,8 @@ equal(
 			'log in',
 			
 			{
-				password: 'very secret password'
+				password:
+				'admin'
 			}
 		),
 	
@@ -402,7 +403,8 @@ equal(
 			'log in',
 			
 			{
-				password: 'very secret password'
+				password:
+				'admin'
 			}
 		),
 	
@@ -520,8 +522,11 @@ equal(
 			'update user',
 			
 			{
-				name: 'John',
-				data:{
+				name:
+				'John',
+				
+				data:
+				{
 					name: 'Jeane',
 					email: 'jeane@yahoo.com',
 					password: '87654321'
@@ -638,9 +643,13 @@ equal(
 			'update user',
 			
 			{
-				name: 'Jeane',
-				data:{
-					email: 'jeane@hotmail.com'
+				name:
+				'Jeane',
+				
+				data:
+				{
+					email:
+					'jeane@hotmail.com'
 				}
 			}
 		),
