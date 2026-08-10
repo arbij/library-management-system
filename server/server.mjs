@@ -291,7 +291,7 @@ new
 						'Content-Type',
 						'text/html'
 					)
-				break
+					break
 				
 				case 'print':
 				case 'send request':
@@ -301,13 +301,13 @@ new
 						'Content-Type',
 						'application/javascript'
 					)
-				break
+					break
 				
 				default:
 					respond(
 						'bad request!'
 					)
-				return
+					return
 			}
 			
 			respond(
@@ -950,7 +950,8 @@ new
 								
 								query
 								+=
-									JSON.stringify(
+									JSON
+									.stringify(
 										await
 											prisma
 											.users

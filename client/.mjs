@@ -33,10 +33,10 @@ create_element(
 	let
 	element
 	=
-	document
-	.createElement(
-		tag
-	)
+		document
+		.createElement(
+			tag
+		)
 	
 	for(
 		let
@@ -48,9 +48,9 @@ create_element(
 			key
 		]
 		=
-		attributes[
-			key
-		]
+			attributes[
+				key
+			]
 	}
 	
 	return(
@@ -58,7 +58,8 @@ create_element(
 	)
 }
 
-let result
+let
+result
 =
 create_element(
 	'pre'
@@ -78,15 +79,16 @@ display(
 		response
 		===
 		'object'
-	)
-	response
-	=
-	JSON
-	.stringify(
-		response,
-		null,
-		4
-	)
+	){
+		response
+		=
+			JSON
+			.stringify(
+				response,
+				null,
+				4
+			)
+	}
 	
 	result
 	.innerHTML
@@ -119,9 +121,9 @@ br(){
 let
 auth_div
 =
-create_element(
-	'div'
-)
+	create_element(
+		'div'
+	)
 
 append(
 	auth_div,
@@ -137,11 +139,11 @@ for(
 	let
 	value
 	of
-		[
-			'name',
-			'email',
-			'password'
-		]
+	[
+		'name',
+		'email',
+		'password'
+	]
 ){
 	auth_div
 	.append(
@@ -175,10 +177,10 @@ for(
 	let
 	value
 	of
-		[
-			'email',
-			'password'
-		]
+	[
+		'email',
+		'password'
+	]
 ){
 	auth_inputs[
 		value
@@ -306,7 +308,7 @@ log_in=
 								response
 							)
 						break
-							
+						
 						default:
 							display(
 								response
@@ -327,7 +329,8 @@ auth_div
 )
 
 let
-role=
+role
+=
 	await
 	auth
 
@@ -357,7 +360,8 @@ let
 user_name
 
 let
-admin=
+admin
+=
 	role
 	===
 	'admin'
@@ -452,18 +456,19 @@ if(
 	)
 	
 	let
-	user_data=
+	user_data
+	=
 	{}
 	
 	for(
 		let
 		key
 		of
-			[
-				'name',
-				'email',
-				'password'
-			]
+		[
+			'name',
+			'email',
+			'password'
+		]
 	){
 		append(
 			key
@@ -479,7 +484,7 @@ if(
 			user_data[
 				key
 			]
-				=
+			=
 				create_element(
 					'input'
 				),
@@ -586,7 +591,8 @@ append(
 )
 
 let
-book_title=
+book_title
+=
 	create_element(
 		'input'
 	)
@@ -698,7 +704,8 @@ for(
 function
 get_book_data(){
 	let
-	result=
+	result
+	=
 	{}
 	
 	for(
@@ -732,7 +739,8 @@ append(
 			
 			onclick(){
 				let
-				new_data=
+				new_data
+				=
 				{}
 				
 				for(
@@ -794,7 +802,8 @@ append(
 			
 			onclick(){
 				let
-				new_data=
+				new_data
+				=
 				{}
 				
 				for(
@@ -851,7 +860,8 @@ append(
 )
 
 let
-ai_query=
+ai_query
+=
 	create_element(
 		'input',
 		

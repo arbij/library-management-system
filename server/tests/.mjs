@@ -724,59 +724,40 @@ print(
 	'now testing ai...'
 )
 
-let
-query=
-	'can you recommend me a book?'
-
-print(
-	query
-)
-
-let
-ai_response=
+equal(
 	await
 		send_request(
 			'ai',
 			
 			{
-				query
+				query:
+				'Respond only with the title of the first book'
 			}
-		)
-
-notEqual(
-	ai_response,
-	'something went wrong'
+		),
+	
+	'Lord of the Rings'
 )
 
 print(
-	ai_response
+	'basic ai test passed'
 )
 
-query=
-	'what about a different genre?'
-
-print(
-	query
-)
-
-ai_response=
+equal(
 	await
 		send_request(
 			'ai',
 			
 			{
-				query
+				query:
+				'Respond only with the last answer in all caps'
 			}
-		)
-
-notEqual(
-	ai_response,
-	'something went wrong'
+		),
+	
+	'LORD OF THE RINGS'
 )
 
 print(
-	'\n\n\n\n\n\n\n\n\n\n',
-	ai_response
+	'ai persistent memory test passed'
 )
 
 server
