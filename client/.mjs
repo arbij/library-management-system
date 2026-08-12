@@ -886,14 +886,24 @@ append(
 			'ask ai',
 			
 			onclick(){
+				let
+				query
+				=
+					ai_query
+					.value
+				
 				display(
+					query
+					===
+					''
+					?
+					'query can\'t be empty!'
+					:
 					send_request(
 						'ai',
 						
 						{
-							query:
-								ai_query
-								.value
+							query
 						}
 					)
 				)

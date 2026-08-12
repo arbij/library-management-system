@@ -44,62 +44,16 @@ ai_model=
 		'nemotron-3.5-lightning-free'
 	)
 
-async function
-prompt_ai(
-	ai_session,
-	text
-){
-	ai_session
-	.push({
-		role:
-		'user',
-		
-		content:
-		text
-	})
-	
-	let{
-		text:
-		result
-	}
-	=
-		await
-			(
-				await
-					import(
-						'ai'
-					)
-			)
-			.generateText({
-				model:
-				ai_model,
-				
-				messages:
-				ai_session
-			})
-	
-	ai_session
-	.push({
-		role:
-		'assistant',
-		
-		content:
-		result
-	})
-	
-	return(
-		result
-	)
-}
-
 let
-database=
+database
+=
 	process
 	.env
 	.database
 
 let
-testing=
+testing
+=
 	database
 	===
 	'file:./databases/test/.db'
@@ -159,23 +113,24 @@ get_file
 
 {
 	let
-	files=
-		{
-			client:
-			'../client/.html',
-			
-			'reset localstorage':
-			'../client/reset localstorage/.html',
-			
-			script:
-			'../client/.mjs',
-			
-			print:
-			'../exports/print.mjs',
-			
-			'send request':
-			'../exports/send request.mjs'
-		}
+	files
+	=
+	{
+		client:
+		'../client/.html',
+		
+		'reset localstorage':
+		'../client/reset localstorage/.html',
+		
+		script:
+		'../client/.mjs',
+		
+		print:
+		'../exports/print.mjs',
+		
+		'send request':
+		'../exports/send request.mjs'
+	}
 	
 	let{
 		readFileSync
@@ -990,15 +945,40 @@ new
 									)
 							}
 							
-							respond(
+							let{
+								text:
+								result
+							}
+							=
 								await
-									prompt_ai(
-										ai_session,
-										query
+									(
+										await
+											import(
+												'ai'
+											)
 									)
+									.generateText({
+										model:
+										ai_model,
+										
+										messages:
+										ai_session
+									})
+							
+							ai_session
+							.push({
+								role:
+								'assistant',
+								
+								content:
+								result
+							})
+							
+							respond(
+								result
 							)
 							return
-						
+							
 						default:
 							respond(
 								'bad request'
