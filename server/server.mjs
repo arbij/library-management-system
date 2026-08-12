@@ -41,8 +41,9 @@ ai_model=
 		apiKey:
 		'public'
 	})(
-		'nemotron-3.5-lightning-free'
+		// 'nemotron-3.5-lightning-free'
 		// 'deepseek-v4-flash-free'
+		'hy3-free'
 	)
 
 let
