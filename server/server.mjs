@@ -42,6 +42,7 @@ ai_model=
 		'public'
 	})(
 		'nemotron-3.5-lightning-free'
+		// 'deepseek-v4-flash-free'
 	)
 
 let
@@ -444,18 +445,18 @@ new
 												}
 											})
 									
-									if(
-										!
-										admin
-									){
-										user_id
-										=
-										id
-										
-										ai_session
-										=
-										undefined
-									}
+									
+									user_id
+									=
+									id
+									
+									ai_session
+									=
+									undefined
+									
+									admin
+									=
+									false
 									
 									respond(
 										'success'
@@ -945,6 +946,15 @@ new
 									)
 							}
 							
+							ai_session
+							.push({
+								role:
+								'user',
+								
+								content:
+								query
+							})
+							
 							let{
 								text:
 								result
@@ -963,6 +973,9 @@ new
 										
 										messages:
 										ai_session
+										
+										// maxRetries:
+										// 0
 									})
 							
 							ai_session
