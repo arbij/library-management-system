@@ -1,3 +1,8 @@
+console
+.time(
+	'set up'
+)
+
 import{
 	equal,
 	deepEqual,
@@ -15,6 +20,16 @@ import{
 	print
 }
 from '../../exports/print.mjs'
+
+console
+.timeEnd(
+	'set up'
+)
+
+console
+.time(
+	'crud tests'
+)
 
 equal(
 	await
@@ -719,9 +734,19 @@ equal(
 	'success'
 )
 
+console
+.timeEnd(
+	'crud tests'
+)
+
 print(
 	'all tests passed!',
 	'now testing ai...'
+)
+
+console
+.time(
+	'basic ai test'
 )
 
 equal(
@@ -738,8 +763,18 @@ equal(
 	'Lord of the Rings'
 )
 
+console
+.timeEnd(
+	'basic ai test'
+)
+
 print(
 	'basic ai test passed'
+)
+
+console
+.time(
+	'ai memory persistence test'
 )
 
 equal(
@@ -756,8 +791,63 @@ equal(
 	'LORD OF THE RINGS'
 )
 
+console
+.timeEnd(
+	'ai memory persistence test'
+)
+
 print(
-	'ai persistent memory test passed'
+	'ai memory persistence test passed'
+)
+
+await
+	send_request(
+		'register',
+		
+		{
+			name:
+			'Sarah',
+			
+			email:
+			'sarah@email.com',
+			
+			password:
+			'strong password'
+		}
+	)
+
+await
+	send_request(
+		'log in',
+		
+		{
+			password:
+			'admin'
+		}
+	)
+
+console
+.time(
+	'admin ai test'
+)
+
+equal(
+	await
+		send_request(
+			'ai',
+			
+			{
+				query:
+				'Respond only with the number of users'
+			}
+		),
+	
+	'2'
+)
+
+console
+.timeEnd(
+	'admin ai test'
 )
 
 server

@@ -41,7 +41,7 @@ ai_model=
 		apiKey:
 		'public'
 	})(
-		'mimo-v2.5-free'
+		'nemotron-3.5-lightning-free'
 	)
 
 async function
@@ -258,7 +258,8 @@ new
 			response
 		){
 			let
-			file=
+			file
+			=
 				decodeURIComponent(
 					request
 					.url
@@ -409,7 +410,8 @@ new
 							}
 							
 							let
-							user=
+							user
+							=
 								await
 									prisma
 									.users
@@ -459,42 +461,46 @@ new
 										return
 									}
 									
-									user_id
+									let{
+										id
+									}
 									=
-										(
-											await
-												prisma
-												.users
-												.create({
-													data:
-													{
-														name,
-														email,
-														
-														password:
-															await
-																bcrypt
-																.hash(
-																	password,
-																	10
-																)
-													},
+										await
+											prisma
+											.users
+											.create({
+												data:
+												{
+													name,
+													email,
 													
-													select:
-													{
-														id: true
-													}
-												})
-										)
-										.id
+													password:
+														await
+															bcrypt
+															.hash(
+																password,
+																10
+															)
+												},
+												
+												select:
+												{
+													id: true
+												}
+											})
 									
-									admin
-									=
-									false
-									
-									ai_session
-									=
-									undefined
+									if(
+										!
+										admin
+									){
+										user_id
+										=
+										id
+										
+										ai_session
+										=
+										undefined
+									}
 									
 									respond(
 										'success'
