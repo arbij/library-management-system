@@ -544,7 +544,7 @@ equal(
 				{
 					name: 'Jeane',
 					email: 'jeane@yahoo.com',
-					password: '87654321'
+					password: '88888888'
 				}
 			}
 		),
@@ -706,7 +706,7 @@ equal(
 				'Jeane',	
 				
 				password:
-				'87654321'
+				'88888888'
 			}
 		),
 	
@@ -740,8 +740,11 @@ console
 )
 
 print(
-	'all tests passed!',
-	'now testing ai...'
+	'crud tests passed!'
+)
+
+print(
+	'testing ai...'
 )
 
 console

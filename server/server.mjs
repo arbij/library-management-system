@@ -24,7 +24,8 @@ from
 '../exports/print.mjs'
 
 let
-ai_model=
+ai_model
+=
 	(
 		await
 			import(
@@ -39,11 +40,35 @@ ai_model=
 		'https://opencode.ai/zen/v1',
 		
 		apiKey:
-		'public'
+		'public',
+		
+		fetch
+		:
+		async function(
+			url,
+			init
+		){
+			init
+			.headers[
+				'user-agent'
+			]
+			=
+			'opencode'
+			
+			return(
+				fetch(
+					url,
+					
+					{
+						...
+						init
+					}
+				)
+			)
+		}
 	})(
-		// 'nemotron-3.5-lightning-free'
-		// 'deepseek-v4-flash-free'
-		'hy3-free'
+		// 'hy3-free'
+		'deepseek-v4-flash-free'
 	)
 
 let
@@ -56,12 +81,15 @@ database
 let
 testing
 =
-	database
+	process
+	.env
+	.testing
 	===
-	'file:./databases/test/.db'
+	'true'
 
 let
-prisma=
+prisma
+=
 	new
 		(
 			await
@@ -326,10 +354,6 @@ new
 								password
 								===
 								(
-									testing
-									?
-									'admin'
-									:
 									process
 									.env
 									.admin_password

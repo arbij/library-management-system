@@ -1,5 +1,7 @@
 @echo off
 
+title %~n0
+
 cls
 
 pushd "../../databases/test/reset"
