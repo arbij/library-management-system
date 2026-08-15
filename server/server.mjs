@@ -997,10 +997,19 @@ new
 										ai_model,
 										
 										messages:
-										ai_session
+										ai_session,
 										
-										// maxRetries:
-										// 0
+										providerOptions:
+										{
+											zen:
+											{
+												reasoningEffort:
+												'none'
+											}
+										},
+										
+										maxRetries:
+										0
 									})
 							
 							ai_session

@@ -5,6 +5,7 @@ from
 '/print'
 
 import{
+	server,
 	send_request
 }
 from
@@ -68,6 +69,8 @@ create_element(
 async function
 display(
 	response
+	=
+	''
 ){
 	response
 	=
@@ -119,130 +122,137 @@ br(){
 }
 
 let
-auth_div
+first_run
 =
-	create_element(
-		'div'
-	)
+true
 
-append(
-	auth_div,
-	result
-)
-
-let
-auth_inputs
-=
-{}
-
-for(
+while(true){
 	let
-	value
-	of
-	[
-		'name',
-		'email',
-		'password'
-	]
-){
 	auth_div
-	.append(
-		value
-		+
-		': ',
-		
-		auth_inputs[
-			value
-		]
-		=
-		create_element(
-			'input',
-			
-			{
-				value
-				:
-					localStorage[
-						value
-					]
-					??
-					''
-			}
-		),
-		
-		br()
-	)
-}
-
-for(
-	let
-	value
-	of
-	[
-		'email',
-		'password'
-	]
-){
-	auth_inputs[
-		value
-	]
-	.type
 	=
-	value
-}
-
-let
-auth_data
-=
-{}
-
-function
-get_auth_data(){
-	auth_data
+		create_element(
+			'div'
+		)
+	
+	append(
+		result
+	)
+	
+	let
+	auth_inputs
 	=
 	{}
 	
 	for(
 		let
-		key
-		in
-		auth_inputs
-	){
-		auth_data[
-			key
+		value
+		of
+		[
+			'name',
+			'email',
+			'password'
 		]
-		=
+	){
+		auth_div
+		.append(
+			value
+			+
+			': ',
+			
 			auth_inputs[
+				value
+			]
+			=
+			create_element(
+				'input',
+				
+				{
+					value
+					:
+						localStorage[
+							value
+						]
+						??
+						''
+				}
+			),
+			
+			br()
+		)
+	}
+
+	for(
+		let
+		value
+		of
+		[
+			'email',
+			'password'
+		]
+	){
+		auth_inputs[
+			value
+		]
+		.type
+		=
+		value
+	}
+
+	let
+	auth_data
+	=
+	{}
+
+	function
+	get_auth_data(){
+		auth_data
+		=
+		{}
+		
+		for(
+			let
+			key
+			in
+			auth_inputs
+		){
+			auth_data[
 				key
 			]
-			.value
-	}
-	
-	return(
-		auth_data
-	)
-}
-
-let{
-	promise:
-	auth,
-	
-	resolve:
-	end_auth
-}
-=
-Promise
-.withResolvers()
-
-let
-register=
-	create_element(
-		'button',
+			=
+				auth_inputs[
+					key
+				]
+				.value
+		}
 		
-		{
-			innerHTML:
-			'register',
+		return(
+			auth_data
+		)
+	}
+
+	let{
+		promise:
+		auth,
+		
+		resolve:
+		end_auth
+	}
+	=
+	Promise
+	.withResolvers()
+
+	let
+	register
+	=
+		create_element(
+			'button',
 			
-			onclick:
+			{
+				innerHTML:
+				'register',
+				
+				onclick
+				:
 				async function(){
 					let
 					response
@@ -275,19 +285,21 @@ register=
 							)
 					}
 				}
-		}
-	)
+			}
+		)
 
-let
-log_in=
-	create_element(
-		'button',
-		
-		{
-			innerHTML:
-			'log in',
+	let
+	log_in
+	=
+		create_element(
+			'button',
 			
-			onclick:
+			{
+				innerHTML:
+				'log in',
+				
+				onclick
+				:
 				async function(){
 					let
 					response
@@ -307,7 +319,7 @@ log_in=
 							end_auth(
 								response
 							)
-						break
+							return
 						
 						default:
 							display(
@@ -315,75 +327,89 @@ log_in=
 							)
 					}
 				}
-		}
-	)
-
-auth_div
-.append(
-	log_in,
-	' (name and password)',
-	br(),
+			}
+		)
 	
-	register,
-	' (name, email, and password)'
-)
-
-let
-role
-=
-	await
-	auth
-
-for(
+	auth_div
+	.append(
+		log_in,
+		' (name and password)',
+		br(),
+		
+		register,
+		' (name, email, and password)'
+	)
+	
+	if(
+		first_run
+	){
+		first_run
+		=
+		false
+		
+		if(
+			!
+				await
+					log_in
+					.onclick()
+		){
+			append(
+				auth_div
+			)	
+			
+			display()
+		}
+	}
+	else{
+		append(
+			auth_div
+		)
+	}
+	
 	let
-	key
-	in
-	auth_data
-){
-	localStorage[
-		key
-	]
-	=
-		auth_data[
-			key
-		]
-}
-
-auth_div
-.remove()
-
-display(
-	''
-)
-
-let
-user_name
-
-let
-admin
-=
 	role
-	===
-	'admin'
-
-if(
+	=
+		await
+		auth
+	
+	localStorage
+	.password
+	=
+		auth_data
+		.password
+	
+	auth_div
+	.remove()
+	
+	display()
+	
+	let
+	user_name
+	
+	let
 	admin
-){
+	=
+		role
+		===
+		'admin'
+	
+	let
+	log_out
+	=
+	Promise
+	.withResolvers()
+	
 	append(
 		create_element(
 			'button',
 			
 			{
 				innerHTML:
-				'get all users',
+				'log out',
 				
-				onclick(){
-					display(
-						send_request(
-							'get all users'
-						)
-					)
-				}
+				onclick:
+					log_out
+					.resolve
 			}
 		),
 		
@@ -391,15 +417,254 @@ if(
 		br()
 	)
 	
-	user_name=
+	if(
+		!
+		admin
+	){
+		localStorage
+		.name
+		=
+			auth_data
+			.name
+	}
+	else{
+		localStorage
+		.name
+		=
+		''
+		
+		append(
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'get all users',
+					
+					onclick(){
+						display(
+							send_request(
+								'get all users'
+							)
+						)
+					}
+				}
+			),
+			
+			br(),
+			br()
+		)
+		
+		user_name=
+			create_element(
+				'input'
+			)
+		
+		append(
+			'username: ',
+			
+			user_name,
+			
+			br(),
+			
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'get user',
+					
+					onclick(){
+						display(
+							send_request(
+								'get user',
+								
+								{
+									name:
+										user_name
+										.value
+								}
+							)
+						)
+					}
+				}
+			),
+			
+			br(),
+			
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'delete user',
+					
+					onclick(){
+						display(
+							send_request(
+								'delete user',
+								
+								{
+									name:
+										user_name
+										.value
+								}
+							)
+						)
+					}
+				}
+			),
+			
+			br(),
+			br()
+		)
+		
+		let
+		user_data
+		=
+		{}
+		
+		for(
+			let
+			key
+			of
+			[
+				'name',
+				'email',
+				'password'
+			]
+		){
+			append(
+				key
+				===
+				'name'
+				?
+				'new name'
+				:
+				key,
+				
+				': ',
+				
+				user_data[
+					key
+				]
+				=
+					create_element(
+						'input'
+					),
+				
+				br()
+			)
+		}
+		
+		append(
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'update a user',
+					
+					onclick(){
+						let
+						new_data
+						=
+						{}
+						
+						for(
+							let
+							key
+							in
+							user_data
+						){
+							if(
+								user_data[
+									key
+								]
+								.value
+								!==
+								''
+							){
+								new_data[
+									key
+								]
+								=
+								user_data[
+									key
+								]
+								.value
+							}		
+						}
+						
+						display(
+							send_request(
+								'update user',
+								
+								{
+									name:
+										user_name
+										.value,
+									
+									data:
+									new_data
+								}
+							)
+						)
+					}
+				}
+			),
+			
+			' (also insert username) (empty values aren\'t used)',
+			
+			br()
+		)
+	}
+
+	append(
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'get all books',
+				
+				onclick(){
+					display(
+						send_request(
+							'get all books',
+							
+							{
+								user_name:
+									user_name
+									?.value
+							}
+						)
+					)
+				}
+			}
+		),
+		
+		admin
+		?
+		' (also insert username)'
+		:
+		'',
+		
+		br(),
+		br()
+	)
+	
+	let
+	book_title
+	=
 		create_element(
 			'input'
 		)
 	
 	append(
-		'username: ',
+		'book title: ',
 		
-		user_name,
+		book_title,
 		
 		br(),
 		
@@ -408,17 +673,21 @@ if(
 			
 			{
 				innerHTML:
-				'get user',
+				'get book',
 				
 				onclick(){
 					display(
 						send_request(
-							'get user',
+							'get book',
 							
 							{
-								name:
+								title:
+									book_title
+									.value,
+								
+								user_name:
 									user_name
-									.value
+									?.value
 							}
 						)
 					)
@@ -432,18 +701,21 @@ if(
 			'button',
 			
 			{
-				innerHTML:
-				'delete user',
+				innerHTML: 'delete book',
 				
 				onclick(){
 					display(
 						send_request(
-							'delete user',
+							'delete book',
 							
 							{
-								name:
+								title:
+									book_title
+									.value,
+									
+								user_name:
 									user_name
-									.value
+									?.value
 							}
 						)
 					)
@@ -454,34 +726,34 @@ if(
 		br(),
 		br()
 	)
-	
+
 	let
-	user_data
-	=
+	book_data=
 	{}
-	
+
 	for(
 		let
 		key
 		of
-		[
-			'name',
-			'email',
-			'password'
-		]
+			[
+				'title',
+				'author',
+				'genre',
+				'status'
+			]
 	){
 		append(
 			key
 			===
-			'name'
+			'title'
 			?
-			'new name'
+			'new title'
 			:
 			key,
 			
 			': ',
 			
-			user_data[
+			book_data[
 				key
 			]
 			=
@@ -492,14 +764,42 @@ if(
 			br()
 		)
 	}
-	
+
+	function
+	get_book_data(){
+		let
+		result
+		=
+		{}
+		
+		for(
+			let
+			key
+			in
+			book_data
+		){
+			result[
+				key
+			]
+			=
+				book_data[
+					key
+				]
+				.value
+		}
+		
+		return(
+			result
+		)
+	}
+
 	append(
 		create_element(
 			'button',
 			
 			{
 				innerHTML:
-				'update a user',
+				'new book',
 				
 				onclick(){
 					let
@@ -511,10 +811,73 @@ if(
 						let
 						key
 						in
-						user_data
+						book_data
+					){
+						new_data[
+							key
+						]
+						=
+						book_data[
+							key
+						]
+						.value
+					}
+					
+					let{
+						title
+					}
+					=
+					new_data
+					
+					delete
+						new_data
+						.title
+					
+					display(
+						send_request(
+							'new book',
+							
+							{
+								title,
+								
+								data:
+								new_data,
+								
+								user_name:
+									user_name
+									?.value
+							}
+						)
+					)
+				}
+			}
+		),
+		
+		br()
+	)
+
+	append(
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'update book',
+				
+				onclick(){
+					let
+					new_data
+					=
+					{}
+					
+					for(
+						let
+						key
+						in
+						book_data
 					){
 						if(
-							user_data[
+							book_data[
 								key
 							]
 							.value
@@ -525,7 +888,7 @@ if(
 								key
 							]
 							=
-							user_data[
+							book_data[
 								key
 							]
 							.value
@@ -534,15 +897,19 @@ if(
 					
 					display(
 						send_request(
-							'update user',
+							'update book',
 							
 							{
-								name:
-									user_name
+								title:
+									book_title
 									.value,
 								
 								data:
-								new_data
+								new_data,
+								
+								user_name:
+									user_name
+									?.value
 							}
 						)
 					)
@@ -550,376 +917,88 @@ if(
 			}
 		),
 		
-		' (also insert username) (empty values aren\'t used)',
+		' (also insert book title) (empty values aren\'t used)',
 		
+		br(),
 		br()
 	)
-}
 
-append(
-	create_element(
-		'button',
-		
-		{
-			innerHTML:
-			'get all books',
-			
-			onclick(){
-				display(
-					send_request(
-						'get all books',
-						
-						{
-							user_name:
-								user_name
-								?.value
-						}
-					)
-				)
-			}
-		}
-	),
-	
-	admin
-	?
-	' (also insert username)'
-	:
-	'',
-	
-	br(),
-	br()
-)
-
-let
-book_title
-=
-	create_element(
-		'input'
-	)
-
-append(
-	'book title: ',
-	
-	book_title,
-	
-	br(),
-	
-	create_element(
-		'button',
-		
-		{
-			innerHTML:
-			'get book',
-			
-			onclick(){
-				display(
-					send_request(
-						'get book',
-						
-						{
-							title:
-								book_title
-								.value,
-							
-							user_name:
-								user_name
-								?.value
-						}
-					)
-				)
-			}
-		}
-	),
-	
-	br(),
-	
-	create_element(
-		'button',
-		
-		{
-			innerHTML: 'delete book',
-			
-			onclick(){
-				display(
-					send_request(
-						'delete book',
-						
-						{
-							title:
-								book_title
-								.value,
-								
-							user_name:
-								user_name
-								?.value
-						}
-					)
-				)
-			}
-		}
-	),
-	
-	br(),
-	br()
-)
-
-let
-book_data=
-{}
-
-for(
 	let
-	key
-	of
-		[
-			'title',
-			'author',
-			'genre',
-			'status'
-		]
-){
-	append(
-		key
-		===
-		'title'
-		?
-		'new title'
-		:
-		key,
-		
-		': ',
-		
-		book_data[
-			key
-		]
-		=
-			create_element(
-				'input'
-			),
-		
-		br()
-	)
-}
-
-function
-get_book_data(){
-	let
-	result
+	ai_query
 	=
-	{}
+		create_element(
+			'input',
+			
+			{
+				size:
+				100
+			}
+		)
+
+	append(
+		ai_query,
+		
+		br(),
+		
+		' ',
+		
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'ask ai',
+				
+				onclick(){
+					let
+					query
+					=
+						ai_query
+						.value
+					
+					display(
+						query
+						===
+						''
+						?
+						'query can\'t be empty!'
+						:
+						send_request(
+							'ai',
+							
+							{
+								query
+							}
+						)
+					)
+				}
+			}
+		),
+		
+		' (might take a few seconds, please be patient!) (remembers past messages in the same session!)'
+	)
+
+	result
+	.style
+	.whiteSpace
+	=
+	'pre-wrap'
 	
-	for(
-		let
-		key
-		in
-		book_data
-	){
-		result[
-			key
-		]
-		=
-			book_data[
-				key
-			]
-			.value
-	}
-	
-	return(
+	append(
 		result
 	)
+	
+	await
+		log_out
+		.promise
+	
+	document
+	.body
+	.innerHTML
+	=
+	''
+	
+	server
+	.disconnect()
+	.connect()
 }
-
-append(
-	create_element(
-		'button',
-		
-		{
-			innerHTML:
-			'new book',
-			
-			onclick(){
-				let
-				new_data
-				=
-				{}
-				
-				for(
-					let
-					key
-					in
-					book_data
-				){
-					new_data[
-						key
-					]
-					=
-					book_data[
-						key
-					]
-					.value
-				}
-				
-				let{
-					title
-				}
-				=
-				new_data
-				
-				delete
-					new_data
-					.title
-				
-				display(
-					send_request(
-						'new book',
-						
-						{
-							title,
-							
-							data:
-							new_data,
-							
-							user_name:
-								user_name
-								?.value
-						}
-					)
-				)
-			}
-		}
-	),
-	
-	br()
-)
-
-append(
-	create_element(
-		'button',
-		
-		{
-			innerHTML:
-			'update book',
-			
-			onclick(){
-				let
-				new_data
-				=
-				{}
-				
-				for(
-					let
-					key
-					in
-					book_data
-				){
-					if(
-						book_data[
-							key
-						]
-						.value
-						!==
-						''
-					){
-						new_data[
-							key
-						]
-						=
-						book_data[
-							key
-						]
-						.value
-					}		
-				}
-				
-				display(
-					send_request(
-						'update book',
-						
-						{
-							title:
-								book_title
-								.value,
-							
-							data:
-							new_data,
-							
-							user_name:
-								user_name
-								?.value
-						}
-					)
-				)
-			}
-		}
-	),
-	
-	' (also insert book title) (empty values aren\'t used)',
-	
-	br(),
-	br()
-)
-
-let
-ai_query
-=
-	create_element(
-		'input',
-		
-		{
-			size:
-			100
-		}
-	)
-
-append(
-	ai_query,
-	
-	br(),
-	
-	' ',
-	
-	create_element(
-		'button',
-		
-		{
-			innerHTML:
-			'ask ai',
-			
-			onclick(){
-				let
-				query
-				=
-					ai_query
-					.value
-				
-				display(
-					query
-					===
-					''
-					?
-					'query can\'t be empty!'
-					:
-					send_request(
-						'ai',
-						
-						{
-							query
-						}
-					)
-				)
-			}
-		}
-	),
-	
-	' (might take a few seconds, please be patient!) (remembers past messages in the same session!)'
-)
-
-result
-.style
-.whiteSpace
-=
-'pre-wrap'
-
-append(
-	result
-)

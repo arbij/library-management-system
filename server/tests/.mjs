@@ -787,7 +787,7 @@ equal(
 			
 			{
 				query:
-				'Respond only with the last answer in all caps'
+				'Give the same response as before, but in all caps'
 			}
 		),
 	
