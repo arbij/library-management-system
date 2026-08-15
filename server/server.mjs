@@ -67,8 +67,8 @@ ai_model
 			)
 		}
 	})(
-		// 'hy3-free'
-		'deepseek-v4-flash-free'
+		'hy3-free'
+		// 'deepseek-v4-flash-free'
 	)
 
 let
