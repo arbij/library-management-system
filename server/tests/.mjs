@@ -1,7 +1,40 @@
-console
-.time(
-	'set up'
-)
+let
+start_time
+
+function
+start(){
+	start_time
+	=
+	performance
+	.now()
+}
+
+function
+end(
+	message
+){
+	print(
+		message,
+		
+		(
+			(
+				performance
+				.now()
+				-
+				start_time
+			)
+			/
+			1000
+		)
+		.toFixed(
+			1
+		)
+		+
+		's'
+	)
+}
+
+start()
 
 import{
 	equal,
@@ -21,15 +54,11 @@ import{
 }
 from '../../exports/print.mjs'
 
-console
-.timeEnd(
+end(
 	'set up'
 )
 
-console
-.time(
-	'crud tests'
-)
+start()
 
 equal(
 	await
@@ -734,23 +763,11 @@ equal(
 	'success'
 )
 
-console
-.timeEnd(
+end(
 	'crud tests'
 )
 
-print(
-	'crud tests passed!'
-)
-
-print(
-	'testing ai...'
-)
-
-console
-.time(
-	'basic ai test'
-)
+start()
 
 equal(
 	await
@@ -766,19 +783,11 @@ equal(
 	'Lord of the Rings'
 )
 
-console
-.timeEnd(
+end(
 	'basic ai test'
 )
 
-print(
-	'basic ai test passed'
-)
-
-console
-.time(
-	'ai memory persistence test'
-)
+start()
 
 equal(
 	await
@@ -794,13 +803,8 @@ equal(
 	'LORD OF THE RINGS'
 )
 
-console
-.timeEnd(
+end(
 	'ai memory persistence test'
-)
-
-print(
-	'ai memory persistence test passed'
 )
 
 await
@@ -829,10 +833,7 @@ await
 		}
 	)
 
-console
-.time(
-	'admin ai test'
-)
+start()
 
 equal(
 	await
@@ -848,9 +849,12 @@ equal(
 	'2'
 )
 
-console
-.timeEnd(
+end(
 	'admin ai test'
+)
+
+print(
+	'all tests passed'
 )
 
 server

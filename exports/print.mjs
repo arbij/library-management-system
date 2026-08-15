@@ -1,7 +1,8 @@
 export
 	function
 	print(
-		...strings
+		...
+		args
 	){
 		let
 		node=
@@ -11,15 +12,22 @@ export
 			'undefined'
 		
 		for(
-			let string
-			of strings
+			let
+			arg
+			of
+			args
 		){
 			if(
 				node
+				&&
+					typeof
+					arg
+					===
+					'object'
 			){
 				console
 				.dir(
-					string,
+					arg,
 					
 					{
 						depth:
@@ -30,7 +38,7 @@ export
 			else{
 				console
 				.log(
-					string
+					arg
 				)
 			}
 		}
