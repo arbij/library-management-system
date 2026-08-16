@@ -8,4 +8,6 @@ To run the prod server (port 5000, connects with prod db), open `server/run.bat`
 
 To run the prod client (connects with prod server), open `client/run.bat`. For the test client (connects with test server), open `client/run test.bat`. The respective server must be running for the client to be served.
 
-Admin password is located in .env (only for ease of set up, secrets do not get committed in real projects)
+Admin password in test is "admin".
+
+Admin password in prod is located in .env (only for ease of set up, secrets do not get committed in real projects)
