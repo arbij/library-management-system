@@ -11,6 +11,13 @@ import{
 from
 '/send request'
 
+document
+.body
+.style
+.minHeight
+=
+'1000px'
+
 print(
 	(
 		location
@@ -64,6 +71,20 @@ result
 =
 create_element(
 	'pre'
+)
+	
+server
+.on(
+	'ai chunk',
+	
+	function(
+		chunk
+	){
+		result
+		.textContent
+		+=
+		chunk
+	}
 )
 
 async function
@@ -134,10 +155,6 @@ while(true){
 			'div'
 		)
 	
-	append(
-		result
-	)
-	
 	let
 	auth_inputs
 	=
@@ -180,7 +197,7 @@ while(true){
 			br()
 		)
 	}
-
+	
 	for(
 		let
 		value
@@ -197,12 +214,12 @@ while(true){
 		=
 		value
 	}
-
+	
 	let
 	auth_data
 	=
 	{}
-
+	
 	function
 	get_auth_data(){
 		auth_data
@@ -229,7 +246,7 @@ while(true){
 			auth_data
 		)
 	}
-
+	
 	let{
 		promise:
 		auth,
@@ -240,7 +257,7 @@ while(true){
 	=
 	Promise
 	.withResolvers()
-
+	
 	let
 	register
 	=
@@ -340,6 +357,11 @@ while(true){
 		' (name, email, and password)'
 	)
 	
+	let
+	auth_successful
+	=
+	false
+	
 	if(
 		first_run
 	){
@@ -354,7 +376,8 @@ while(true){
 					.onclick()
 		){
 			append(
-				auth_div
+				auth_div,
+				result
 			)	
 			
 			display()
@@ -362,7 +385,8 @@ while(true){
 	}
 	else{
 		append(
-			auth_div
+			auth_div,
+			result
 		)
 	}
 	
@@ -371,12 +395,6 @@ while(true){
 	=
 		await
 		auth
-	
-	localStorage
-	.password
-	=
-		auth_data
-		.password
 	
 	auth_div
 	.remove()
@@ -417,22 +435,25 @@ while(true){
 		br()
 	)
 	
+	localStorage
+	.password
+	=
+		auth_data
+		.password
+	
+	localStorage
+	.name
+	=
+		admin
+		?
+		''
+		:
+			auth_data
+				.name
+	
 	if(
-		!
 		admin
 	){
-		localStorage
-		.name
-		=
-			auth_data
-			.name
-	}
-	else{
-		localStorage
-		.name
-		=
-		''
-		
 		append(
 			create_element(
 				'button',
@@ -949,20 +970,32 @@ while(true){
 				innerHTML:
 				'ask ai',
 				
-				onclick(){
+				onclick
+				:
+				async function(){
 					let
 					query
 					=
 						ai_query
 						.value
 					
-					display(
+					if(
 						query
 						===
 						''
-						?
-						'query can\'t be empty!'
-						:
+					){
+						display(
+							'query can\'t be empty!'
+						)
+						return
+					}
+					
+					display()
+					
+					let
+					response
+					=
+					await
 						send_request(
 							'ai',
 							
@@ -970,14 +1003,23 @@ while(true){
 								query
 							}
 						)
-					)
+					
+					if(
+						response
+						!==
+						'success!'
+					){
+						display(
+							response
+						)
+					}
 				}
 			}
 		),
 		
 		' (might take a few seconds, please be patient!) (remembers past messages in the same session!)'
 	)
-
+	
 	result
 	.style
 	.whiteSpace
@@ -991,6 +1033,8 @@ while(true){
 	await
 		log_out
 		.promise
+	
+	display()
 	
 	document
 	.body

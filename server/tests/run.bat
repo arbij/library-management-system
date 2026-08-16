@@ -1,6 +1,7 @@
 @echo off
 
-title %~n0
+@REM title %~n0
+title tests
 
 cls
 

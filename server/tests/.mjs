@@ -1,5 +1,6 @@
 let
-start_time
+	start_time,
+	first_chunk_arrived
 
 function
 start(){
@@ -11,11 +12,27 @@ start(){
 
 function
 end(
-	message
+	message,
+	
+	indent
+	=
+	false
 ){
+	indent
+	=
+	indent
+	?
+	'\t'
+	:
+	''
+	
 	print(
+		indent
+		+
 		message,
 		
+		indent
+		+
 		(
 			(
 				performance
@@ -767,45 +784,124 @@ end(
 	'crud tests'
 )
 
-start()
+let
+ai_response
 
-equal(
-	await
-		send_request(
-			'ai',
-			
-			{
-				query:
-				'Respond only with the title of the first book'
-			}
-		),
+server
+.on(
+	'ai chunk',
 	
-	'Lord of the Rings'
-)
-
-end(
-	'basic ai test'
-)
-
-start()
-
-equal(
-	await
-		send_request(
-			'ai',
+	function(
+		chunk
+	){
+		if(
+			!
+			first_chunk_arrived
+		){
+			end(
+				'first chunk',
+				true
+			)
 			
-			{
-				query:
-				'Give the same response as before, but in all caps'
-			}
-		),
-	
-	'LORD OF THE RINGS'
+			first_chunk_arrived
+			=
+			true
+		}
+		
+		ai_response
+		+=
+		chunk
+	}
 )
 
-end(
-	'ai memory persistence test'
-)
+let
+old_start
+=
+start
+
+start
+=
+function(
+	message
+){
+	print(
+		message
+	)
+	
+	first_chunk_arrived
+	=
+	false
+	
+	old_start()
+}
+
+async function
+ai_test(
+	test_name,
+	query,
+	expected_response
+){
+	ai_response
+	=
+	''
+	
+	start(
+		test_name
+	)
+	
+	equal(
+		await
+			send_request(
+				'ai',
+				
+				{
+					query
+				}
+			),
+		
+		'success!'
+	)
+	
+	if(
+		expected_response
+	){
+		equal(
+			ai_response,
+			expected_response
+		)	
+	}
+	//uncomment for debugging
+	// else{
+	// 	print(
+	// 		ai_response
+	// 	)
+	// }
+	
+	end(
+		'last chunk',
+		true
+	)
+}
+
+await
+	ai_test(
+		'basic ai test:',
+		'Respond only with the title of the first book',
+		'Lord of the Rings'
+	)
+	
+await
+	ai_test(
+		'ai memory persistence test:',
+		'Give the same response as before, but in all caps',
+		'LORD OF THE RINGS'
+	)
+
+await
+	ai_test(
+		'long ai response test',
+		'What books would you recommend me?'
+	)
 
 await
 	send_request(
@@ -833,25 +929,12 @@ await
 		}
 	)
 
-start()
-
-equal(
-	await
-		send_request(
-			'ai',
-			
-			{
-				query:
-				'Respond only with the number of users'
-			}
-		),
-	
-	'2'
-)
-
-end(
-	'admin ai test'
-)
+await
+	ai_test(
+		'admin ai test',
+		'Respond only with the number of users',
+		'2'
+	)
 
 print(
 	'all tests passed'

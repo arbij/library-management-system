@@ -1,6 +1,6 @@
 @echo off
 
-title %~n0
+title test server
 
 cls
 

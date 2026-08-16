@@ -67,8 +67,8 @@ ai_model
 			)
 		}
 	})(
-		'hy3-free'
-		// 'deepseek-v4-flash-free'
+		// 'hy3-free'
+		'deepseek-v4-flash-free'
 	)
 
 let
@@ -956,7 +956,6 @@ new
 												select:
 												{
 													name: true,
-													email: true,
 													
 													books:
 													{
@@ -982,47 +981,69 @@ new
 							
 							let{
 								text:
-								result
+								result,
+								
+								stream
 							}
 							=
-								await
-									(
-										await
-											import(
-												'ai'
-											)
-									)
-									.generateText({
-										model:
-										ai_model,
-										
-										messages:
-										ai_session,
-										
-										providerOptions:
+								(
+									await
+										import(
+											'ai'
+										)
+								)
+								.streamText({
+									model:
+									ai_model,
+									
+									messages:
+									ai_session,
+									
+									providerOptions:
+									{
+										zen:
 										{
-											zen:
-											{
-												reasoningEffort:
-												'none'
-											}
-										},
+											reasoningEffort:
+											'none'
+										}
+									}
+								})
+							
+							for await(
+								let
+								chunk
+								of
+								stream
+							){
+								if(
+									chunk
+									.type
+									===
+									'text-delta'
+								){
+									client
+									.emit(
+										'ai chunk',
 										
-										maxRetries:
-										0
-									})
+										chunk
+										.text
+									)
+								}
+							}
 							
 							ai_session
 							.push({
 								role:
 								'assistant',
 								
-								content:
-								result
+								content
+								:
+									await
+									result
 							})
 							
 							respond(
-								result
+								'success!'
 							)
 							return
 							
