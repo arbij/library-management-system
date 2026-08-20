@@ -1,75 +1,94 @@
 let
-	start_time,
-	first_chunk_arrived
+	start,
+	end
 
-function
-start(){
+{
+	let
 	start_time
-	=
-	performance
-	.now()
-}
-
-function
-end(
-	message,
 	
-	indent
+	start
 	=
-	false
-){
-	indent
-	=
-	indent
-	?
-	'    '
-	:
-	''
+	function(){
+		start_time
+		=
+		performance
+		.now()
+	}
 	
-	print(
-		indent
-		+
+	end
+	=
+	function(
 		message,
 		
 		indent
-		+
-		(
+		=
+		false
+	){
+		indent
+		=
+		indent
+		?
+		'    '
+		:
+		''
+		
+		print(
+			indent
+			+
+			message,
+			
+			indent
+			+
 			(
-				performance
-				.now()
-				-
-				start_time
+				(
+					performance
+					.now()
+					-
+					start_time
+				)
+				/
+				1000
 			)
-			/
-			1000
+			.toFixed(
+				1
+			)
+			+
+			's'
 		)
-		.toFixed(
-			1
-		)
-		+
-		's'
-	)
+	}
 }
 
 start()
 
-import{
+let{
 	equal,
 	deepEqual,
 	notEqual
 }
-from 'assert/strict';
+=
+	await
+		import(
+			'assert/strict'
+		)
 
-import{
+let{
 	server,
 	send_request
 }
-from '../../exports/send request.mjs'
+=
+	await
+		import(
+			'../../exports/send request.mjs'
+		)
 
-import{
+let{
 	print
 }
-from '../../exports/print.mjs'
+=
+	await
+		import(
+			'../../exports/print.mjs'
+		)
 
 end(
 	'set up'
@@ -785,102 +804,88 @@ end(
 )
 
 let
-ai_response
+ai_test
 
-server
-.on(
-	'ai chunk',
+{
+	let
+		ai_response,
+		first_chunk_arrived
 	
-	function(
-		chunk
-	){
-		if(
-			!
-			first_chunk_arrived
+	server
+	.on(
+		'ai chunk',
+		
+		function(
+			chunk
 		){
-			end(
-				'first chunk',
-				true
-			)
-			
-			first_chunk_arrived
-			=
-			true
-		}
-		
-		ai_response
-		+=
-		chunk
-	}
-)
-
-let
-old_start
-=
-start
-
-start
-=
-function(
-	message
-){
-	print(
-		message
-	)
-	
-	first_chunk_arrived
-	=
-	false
-	
-	old_start()
-}
-
-async function
-ai_test(
-	test_name,
-	query,
-	expected_response
-){
-	ai_response
-	=
-	''
-	
-	start(
-		test_name
-	)
-	
-	equal(
-		await
-			send_request(
-				'ai',
+			if(
+				!
+				first_chunk_arrived
+			){
+				end(
+					'first chunk',
+					true
+				)
 				
-				{
-					query
-				}
-			),
-		
-		'success!'
+				first_chunk_arrived
+				=
+				true
+			}
+			
+			ai_response
+			+=
+			chunk
+		}
 	)
 	
-	if(
+	ai_test
+	=
+	async function(
+		test_name,
+		query,
 		expected_response
 	){
+		ai_response
+		=
+		''
+		
+		first_chunk_arrived
+		=
+		false
+		
+		print(
+			test_name
+		)
+		
+		start()
+		
 		equal(
-			ai_response,
+			await
+				send_request(
+					'ai',
+					
+					{
+						query
+					}
+				),
+			
+			'success!'
+		)
+		
+		if(
 			expected_response
-		)	
+		){
+			equal(
+				ai_response,
+				expected_response
+			)	
+		}
+		
+		end(
+			'last chunk',
+			true
+		)
 	}
-	//uncomment for debugging
-	// else{
-	// 	print(
-	// 		ai_response
-	// 	)
-	// }
-	
-	end(
-		'last chunk',
-		true
-	)
 }
 
 await

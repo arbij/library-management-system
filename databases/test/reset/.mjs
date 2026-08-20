@@ -11,5 +11,10 @@ new
 )
 .exec(`
 	delete from "Books";
-	delete from "Users";	
+	delete from "Users";
 `)
+
+console
+.log(
+	'test db reset\n'
+)

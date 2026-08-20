@@ -13,11 +13,28 @@
 <script
 	type=module
 >
-	(
+	let{
+		strictEqual
+	}
+	=
+		(
+			await
+				import(
+					'https://cdn.jsdelivr.net/npm/chai'
+				)
+		)
+		.assert
+	
+	let{
+		run
+	}
+	=
 		await
 			import(
 				'/script'
 			)
-	)
-	.run()
+			
+	run()
+	
+	
 </script>

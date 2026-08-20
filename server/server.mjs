@@ -150,6 +150,9 @@ get_file
 		client:
 		'../client/.html',
 		
+		'client tests':
+		'../client/tests/.html',
+		
 		'reset localstorage':
 		'../client/reset localstorage/.html',
 		
@@ -273,6 +276,7 @@ new
 					'client'
 				
 				case 'reset localstorage':
+				case 'client tests':
 					response
 					.setHeader(
 						'Content-Type',
@@ -326,6 +330,8 @@ new
 			user_id,
 			admin,
 			ai_session
+			=
+			[]
 		
 		client
 		.on(
@@ -366,7 +372,7 @@ new
 								
 								ai_session
 								=
-								undefined
+								[]
 								
 								user_id
 								=
@@ -478,7 +484,7 @@ new
 									
 									ai_session
 									=
-									undefined
+									[]
 									
 									admin
 									=
@@ -519,7 +525,7 @@ new
 										
 										ai_session
 										=
-										undefined
+										[]
 										
 										respond(
 											'user'
@@ -537,9 +543,13 @@ new
 						case 'log out':
 							admin
 							=
-								user_id
-								=
-								undefined
+							user_id
+							=
+							undefined
+							
+							ai_session
+							=
+							[]
 							
 							respond(
 								'success'
@@ -929,13 +939,10 @@ new
 							
 							if(
 								ai_session
+								.length
 								===
-								undefined
-							){
-								ai_session
-								=
-								[]
-								
+								0
+							){	
 								query
 								+=
 									JSON
@@ -1007,7 +1014,7 @@ new
 											reasoningEffort:
 											'none'
 										}
-									}
+									},
 								})
 							
 							for await(
@@ -1016,6 +1023,19 @@ new
 								of
 								stream
 							){
+								if(
+									chunk
+									.type
+									===
+									'reasoning-delta'
+								){
+									throw(
+										Error(
+											'reasoning should be disabled'
+										)
+									)
+								}
+								
 								if(
 									chunk
 									.type
@@ -1037,8 +1057,7 @@ new
 								role:
 								'assistant',
 								
-								content
-								:
+								content:
 									await
 									result
 							})
