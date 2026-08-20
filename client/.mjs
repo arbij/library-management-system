@@ -147,289 +147,327 @@ first_run
 =
 true
 
-export
-async function
-run(){
-	while(true){
+while(true){
+	let
+	auth_div
+	=
+		create_element(
+			'div'
+		)
+	
+	let
+	auth_inputs
+	=
+	{}
+	
+	for(
 		let
+		value
+		of
+		[
+			'name',
+			'email',
+			'password'
+		]
+	){
 		auth_div
-		=
-			create_element(
-				'div'
-			)
-		
-		let
-		auth_inputs
-		=
-		{}
-		
-		for(
-			let
+		.append(
 			value
-			of
-			[
-				'name',
-				'email',
-				'password'
-			]
-		){
-			auth_div
-			.append(
-				value
-				+
-				': ',
-				
-				auth_inputs[
-					value
-				]
-				=
-				create_element(
-					'input',
-					
-					{
-						value
-						:
-							localStorage[
-								value
-							]
-							??
-							''
-					}
-				),
-				
-				br()
-			)
-		}
-		
-		for(
-			let
-			value
-			of
-			[
-				'email',
-				'password'
-			]
-		){
+			+
+			': ',
+			
 			auth_inputs[
 				value
 			]
-			.type
 			=
-			value
-		}
-		
+			create_element(
+				'input',
+				
+				{
+					value
+					:
+						localStorage[
+							value
+						]
+						??
+						''
+				}
+			),
+			
+			br()
+		)
+	}
+	
+	for(
 		let
+		value
+		of
+		[
+			'email',
+			'password'
+		]
+	){
+		auth_inputs[
+			value
+		]
+		.type
+		=
+		value
+	}
+	
+	let
+	auth_data
+	=
+	{}
+	
+	function
+	get_auth_data(){
 		auth_data
 		=
 		{}
 		
-		function
-		get_auth_data(){
-			auth_data
-			=
-			{}
-			
-			for(
-				let
+		for(
+			let
+			key
+			in
+			auth_inputs
+		){
+			auth_data[
 				key
-				in
-				auth_inputs
-			){
-				auth_data[
+			]
+			=
+				auth_inputs[
 					key
 				]
-				=
-					auth_inputs[
-						key
-					]
-					.value
-			}
-			
-			return(
-				auth_data
-			)
+				.value
 		}
 		
-		let{
-			promise:
-			auth,
-			
-			resolve:
-			end_auth
-		}
-		=
-		Promise
-		.withResolvers()
-		
-		let
-		register
-		=
-			create_element(
-				'button',
-				
-				{
-					innerHTML:
-					'register',
-					
-					onclick
-					:
-					async function(){
-						let
-						response
-						=
-							await
-								send_request(
-									'register',
-									
-									get_auth_data()
-								)
-						
-						switch(
-							response
-						){
-							case 'success':
-								end_auth(
-									'user'
-								)
-							break
-							
-							case 'admin':
-								end_auth(
-									'admin'
-								)
-							break
-							
-							default:
-								display(
-									response
-								)
-						}
-					}
-				}
-			)
-
-		let
-		log_in
-		=
-			create_element(
-				'button',
-				
-				{
-					innerHTML:
-					'log in',
-					
-					onclick
-					:
-					async function(){
-						let
-						response
-						=
-							await
-								send_request(
-									'log in',
-									
-									get_auth_data()
-								)
-						
-						switch(
-							response
-						){
-							case 'user':
-							case 'admin':
-								end_auth(
-									response
-								)
-								
-								return(
-									true
-								)
-							
-							default:
-								display(
-									response
-								)
-						}
-					}
-				}
-			)
-		
-		auth_div
-		.append(
-			log_in,
-			' (name and password)',
-			br(),
-			
-			register,
-			' (name, email, and password)'
+		return(
+			auth_data
 		)
+	}
+	
+	let{
+		promise:
+		auth,
+		
+		resolve:
+		end_auth
+	}
+	=
+	Promise
+	.withResolvers()
+	
+	let
+	register
+	=
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'register',
+				
+				onclick
+				:
+				async function(){
+					let
+					response
+					=
+						await
+							send_request(
+								'register',
+								
+								get_auth_data()
+							)
+					
+					switch(
+						response
+					){
+						case 'success':
+							end_auth(
+								'user'
+							)
+						break
+						
+						case 'admin':
+							end_auth(
+								'admin'
+							)
+						break
+						
+						default:
+							display(
+								response
+							)
+					}
+				}
+			}
+		)
+
+	let
+	log_in
+	=
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'log in',
+				
+				onclick
+				:
+				async function(){
+					let
+					response
+					=
+						await
+							send_request(
+								'log in',
+								
+								get_auth_data()
+							)
+					
+					switch(
+						response
+					){
+						case 'user':
+						case 'admin':
+							end_auth(
+								response
+							)
+							
+							return(
+								true
+							)
+						
+						default:
+							display(
+								response
+							)
+					}
+				}
+			}
+		)
+	
+	auth_div
+	.append(
+		log_in,
+		' (name and password)',
+		br(),
+		
+		register,
+		' (name, email, and password)'
+	)
+	
+	if(
+		!
+		first_run
+	){
+		append(
+			auth_div,
+			result
+		)
+	}
+	else{
+		first_run
+		=
+		false
 		
 		if(
 			!
-			first_run
+				await
+					log_in
+					.onclick()
 		){
 			append(
 				auth_div,
 				result
-			)
-		}
-		else{
-			first_run
-			=
-			false
+			)	
 			
-			if(
-				!
-					await
-						log_in
-						.onclick()
-			){
-				append(
-					auth_div,
-					result
-				)	
-				
-				display()
-			}
+			display()
 		}
-		
-		let
+	}
+	
+	let
+	role
+	=
+		await
+		auth
+	
+	auth_div
+	.remove()
+	
+	display()
+	
+	let
+	user_name
+	
+	let
+	admin
+	=
 		role
-		=
-			await
-			auth
+		===
+		'admin'
+	
+	let
+	log_out
+	=
+	Promise
+	.withResolvers()
+	
+	append(
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'log out',
+				
+				onclick:
+					log_out
+					.resolve
+			}
+		),
 		
-		auth_div
-		.remove()
-		
-		display()
-		
-		let
-		user_name
-		
-		let
+		br(),
+		br()
+	)
+	
+	localStorage
+	.password
+	=
+		auth_data
+		.password
+	
+	localStorage
+	.name
+	=
 		admin
-		=
-			role
-			===
-			'admin'
-		
-		let
-		log_out
-		=
-		Promise
-		.withResolvers()
-		
+		?
+		''
+		:
+			auth_data
+				.name
+	
+	if(
+		admin
+	){
 		append(
 			create_element(
 				'button',
 				
 				{
 					innerHTML:
-					'log out',
+					'get all users',
 					
-					onclick:
-						log_out
-						.resolve
+					onclick(){
+						display(
+							send_request(
+								'get all users'
+							)
+						)
+					}
 				}
 			),
 			
@@ -437,213 +475,176 @@ run(){
 			br()
 		)
 		
-		localStorage
-		.password
-		=
-			auth_data
-			.password
+		user_name=
+			create_element(
+				'input'
+			)
 		
-		localStorage
-		.name
-		=
-			admin
-			?
-			''
-			:
-				auth_data
-					.name
+		append(
+			'username: ',
+			
+			user_name,
+			
+			br(),
+			
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'get user',
+					
+					onclick(){
+						display(
+							send_request(
+								'get user',
+								
+								{
+									name:
+										user_name
+										.value
+								}
+							)
+						)
+					}
+				}
+			),
+			
+			br(),
+			
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'delete user',
+					
+					onclick(){
+						display(
+							send_request(
+								'delete user',
+								
+								{
+									name:
+										user_name
+										.value
+								}
+							)
+						)
+					}
+				}
+			),
+			
+			br(),
+			br()
+		)
 		
-		if(
-			admin
+		let
+		user_data
+		=
+		{}
+		
+		for(
+			let
+			key
+			of
+			[
+				'name',
+				'email',
+				'password'
+			]
 		){
 			append(
-				create_element(
-					'button',
-					
-					{
-						innerHTML:
-						'get all users',
-						
-						onclick(){
-							display(
-								send_request(
-									'get all users'
-								)
-							)
-						}
-					}
-				),
-				
-				br(),
-				br()
-			)
-			
-			user_name=
-				create_element(
-					'input'
-				)
-			
-			append(
-				'username: ',
-				
-				user_name,
-				
-				br(),
-				
-				create_element(
-					'button',
-					
-					{
-						innerHTML:
-						'get user',
-						
-						onclick(){
-							display(
-								send_request(
-									'get user',
-									
-									{
-										name:
-											user_name
-											.value
-									}
-								)
-							)
-						}
-					}
-				),
-				
-				br(),
-				
-				create_element(
-					'button',
-					
-					{
-						innerHTML:
-						'delete user',
-						
-						onclick(){
-							display(
-								send_request(
-									'delete user',
-									
-									{
-										name:
-											user_name
-											.value
-									}
-								)
-							)
-						}
-					}
-				),
-				
-				br(),
-				br()
-			)
-			
-			let
-			user_data
-			=
-			{}
-			
-			for(
-				let
 				key
-				of
-				[
-					'name',
-					'email',
-					'password'
-				]
-			){
-				append(
+				===
+				'name'
+				?
+				'new name'
+				:
+				key,
+				
+				': ',
+				
+				user_data[
 					key
-					===
-					'name'
-					?
-					'new name'
-					:
-					key,
-					
-					': ',
-					
-					user_data[
-						key
-					]
-					=
-						create_element(
-							'input'
-						),
-					
-					br()
-				)
-			}
-			
-			append(
-				create_element(
-					'button',
-					
-					{
-						innerHTML:
-						'update a user',
-						
-						onclick(){
-							let
-							new_data
-							=
-							{}
-							
-							for(
-								let
-								key
-								in
-								user_data
-							){
-								if(
-									user_data[
-										key
-									]
-									.value
-									!==
-									''
-								){
-									new_data[
-										key
-									]
-									=
-									user_data[
-										key
-									]
-									.value
-								}		
-							}
-							
-							display(
-								send_request(
-									'update user',
-									
-									{
-										name:
-											user_name
-											.value,
-										
-										data:
-										new_data
-									}
-								)
-							)
-						}
-					}
-				),
+				]
+				=
+					create_element(
+						'input'
+					),
 				
-				' (empty values aren\'t used)',
-				
-				br(),
 				br()
 			)
 		}
-
+		
+		append(
+			create_element(
+				'button',
+				
+				{
+					innerHTML:
+					'update a user',
+					
+					onclick(){
+						let
+						new_data
+						=
+						{}
+						
+						for(
+							let
+							key
+							in
+							user_data
+						){
+							if(
+								user_data[
+									key
+								]
+								.value
+								!==
+								''
+							){
+								new_data[
+									key
+								]
+								=
+								user_data[
+									key
+								]
+								.value
+							}		
+						}
+						
+						display(
+							send_request(
+								'update user',
+								
+								{
+									name:
+										user_name
+										.value,
+									
+									data:
+									new_data
+								}
+							)
+						)
+					}
+				}
+			),
+			
+			' (empty values aren\'t used)',
+			
+			br(),
+			br()
+		)
+	}
+	
+	if(
+		!
+		admin
+	){
 		append(
 			create_element(
 				'button',
@@ -671,165 +672,237 @@ run(){
 			br(),
 			br()
 		)
+	}
+	
+	let
+	book_title
+	=
+		create_element(
+			'input'
+		)
+	
+	append(
+		'book title: ',
 		
-		let
-		book_title
-		=
-			create_element(
-				'input'
-			)
+		book_title,
 		
-		append(
-			'book title: ',
+		br(),
+		
+		create_element(
+			'button',
 			
-			book_title,
-			
-			br(),
-			
-			create_element(
-				'button',
+			{
+				innerHTML:
+				'get book',
 				
-				{
-					innerHTML:
-					'get book',
-					
-					onclick(){
-						display(
-							send_request(
-								'get book',
+				onclick(){
+					display(
+						send_request(
+							'get book',
+							
+							{
+								title:
+									book_title
+									.value,
 								
-								{
-									title:
-										book_title
-										.value,
+								user_name:
+									user_name
+									?.value
+							}
+						)
+					)
+				}
+			}
+		),
+		
+		br(),
+		
+		create_element(
+			'button',
+			
+			{
+				innerHTML: 'delete book',
+				
+				onclick(){
+					display(
+						send_request(
+							'delete book',
+							
+							{
+								title:
+									book_title
+									.value,
 									
-									user_name:
-										user_name
-										?.value
-								}
-							)
+								user_name:
+									user_name
+									?.value
+							}
 						)
-					}
+					)
 				}
-			),
+			}
+		),
+		
+		br(),
+		br()
+	)
+
+	let
+	book_data=
+	{}
+
+	for(
+		let
+		key
+		of
+			[
+				'title',
+				'author',
+				'genre',
+				'status'
+			]
+	){
+		append(
+			key
+			===
+			'title'
+			?
+			'new title'
+			:
+			key,
 			
-			br(),
+			': ',
 			
-			create_element(
-				'button',
-				
-				{
-					innerHTML: 'delete book',
-					
-					onclick(){
-						display(
-							send_request(
-								'delete book',
-								
-								{
-									title:
-										book_title
-										.value,
-										
-									user_name:
-										user_name
-										?.value
-								}
-							)
-						)
-					}
-				}
-			),
+			book_data[
+				key
+			]
+			=
+				create_element(
+					'input'
+				),
 			
-			br(),
 			br()
 		)
+	}
 
+	function
+	get_book_data(){
 		let
-		book_data=
+		result
+		=
 		{}
-
+		
 		for(
 			let
 			key
-			of
-				[
-					'title',
-					'author',
-					'genre',
-					'status'
-				]
+			in
+			book_data
 		){
-			append(
+			result[
 				key
-				===
-				'title'
-				?
-				'new title'
-				:
-				key,
-				
-				': ',
-				
+			]
+			=
 				book_data[
 					key
 				]
-				=
-					create_element(
-						'input'
-					),
-				
-				br()
-			)
+				.value
 		}
-
-		function
-		get_book_data(){
-			let
+		
+		return(
 			result
-			=
-			{}
-			
-			for(
-				let
-				key
-				in
-				book_data
-			){
-				result[
-					key
-				]
-				=
-					book_data[
-						key
-					]
-					.value
-			}
-			
-			return(
-				result
-			)
-		}
+		)
+	}
 
-		append(
-			create_element(
-				'button',
+	append(
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'new book',
 				
-				{
-					innerHTML:
-					'new book',
+				onclick(){
+					let
+					new_data
+					=
+					{}
 					
-					onclick(){
+					for(
 						let
-						new_data
-						=
-						{}
-						
-						for(
-							let
+						key
+						in
+						book_data
+					){
+						new_data[
 							key
-							in
-							book_data
+						]
+						=
+						book_data[
+							key
+						]
+						.value
+					}
+					
+					let{
+						title
+					}
+					=
+					new_data
+					
+					delete
+						new_data
+						.title
+					
+					display(
+						send_request(
+							'new book',
+							
+							{
+								title,
+								
+								data:
+								new_data,
+								
+								user_name:
+									user_name
+									?.value
+							}
+						)
+					)
+				}
+			}
+		),
+		
+		br()
+	)
+
+	append(
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'update book',
+				
+				onclick(){
+					let
+					new_data
+					=
+					{}
+					
+					for(
+						let
+						key
+						in
+						book_data
+					){
+						if(
+							book_data[
+								key
+							]
+							.value
+							!==
+							''
 						){
 							new_data[
 								key
@@ -839,214 +912,142 @@ run(){
 								key
 							]
 							.value
-						}
-						
-						let{
-							title
-						}
-						=
-						new_data
-						
-						delete
-							new_data
-							.title
-						
-						display(
-							send_request(
-								'new book',
-								
-								{
-									title,
-									
-									data:
-									new_data,
-									
-									user_name:
-										user_name
-										?.value
-								}
-							)
-						)
+						}		
 					}
+					
+					display(
+						send_request(
+							'update book',
+							
+							{
+								title:
+									book_title
+									.value,
+								
+								data:
+								new_data,
+								
+								user_name:
+									user_name
+									?.value
+							}
+						)
+					)
 				}
-			),
+			}
+		),
+		
+		' (also insert book title) (empty values aren\'t used)',
+		
+		br(),
+		br()
+	)
+
+	let
+	ai_query
+	=
+		create_element(
+			'input',
 			
-			br()
+			{
+				size:
+				100
+			}
 		)
 
-		append(
-			create_element(
-				'button',
+	append(
+		ai_query,
+		
+		br(),
+		
+		' ',
+		
+		create_element(
+			'button',
+			
+			{
+				innerHTML:
+				'ask ai',
 				
-				{
-					innerHTML:
-					'update book',
+				onclick
+				:
+				async function(){
+					let
+					query
+					=
+						ai_query
+						.value
 					
-					onclick(){
-						let
-						new_data
-						=
-						{}
-						
-						for(
-							let
-							key
-							in
-							book_data
-						){
-							if(
-								book_data[
-									key
-								]
-								.value
-								!==
-								''
-							){
-								new_data[
-									key
-								]
-								=
-								book_data[
-									key
-								]
-								.value
-							}		
-						}
-						
-						display(
-							send_request(
-								'update book',
-								
-								{
-									title:
-										book_title
-										.value,
-									
-									data:
-									new_data,
-									
-									user_name:
-										user_name
-										?.value
-								}
-							)
-						)
-					}
-				}
-			),
-			
-			' (also insert book title) (empty values aren\'t used)',
-			
-			br(),
-			br()
-		)
-
-		let
-		ai_query
-		=
-			create_element(
-				'input',
-				
-				{
-					size:
-					100
-				}
-			)
-
-		append(
-			ai_query,
-			
-			br(),
-			
-			' ',
-			
-			create_element(
-				'button',
-				
-				{
-					innerHTML:
-					'ask ai',
-					
-					onclick
-					:
-					async function(){
-						let
+					if(
 						query
-						=
-							ai_query
-							.value
-						
-						if(
-							query
-							===
-							''
-						){
-							display(
-								'query can\'t be empty!'
-							)
-							return
-						}
-						
-						display()
-						
-						let
+						===
+						''
+					){
+						display(
+							'query can\'t be empty!'
+						)
+						return
+					}
+					
+					display()
+					
+					let
+					response
+					=
+					await
+						send_request(
+							'ai',
+							
+							{
+								query
+							}
+						)
+					
+					if(
 						response
-						=
-						await
-							send_request(
-								'ai',
-								
-								{
-									query
-								}
-							)
-						
-						if(
+						!==
+						'success!'
+					){
+						display(
 							response
-							!==
-							'success!'
-						){
-							display(
-								response
-							)
-						}
+						)
 					}
 				}
-			),
-			
-			' (might take a few seconds, please be patient!) (remembers past messages in the same session!)'
-		)
+			}
+		),
 		
+		' (might take a few seconds, please be patient!) (remembers past messages in the same session!)'
+	)
+	
+	result
+	.style
+	.whiteSpace
+	=
+	'pre-wrap'
+	
+	append(
 		result
-		.style
-		.whiteSpace
-		=
-		'pre-wrap'
-		
-		append(
-			result
-		)
-		
+	)
+	
+	await
+		log_out
+		.promise
+	
+	display()
+	
+	document
+	.body
+	.innerHTML
+	=
+	''
+	
+	localStorage
+	.clear()
+	
+	display(
 		await
-			log_out
-			.promise
-		
-		display()
-		
-		document
-		.body
-		.innerHTML
-		=
-		''
-		
-		localStorage
-		.clear()
-		
-		display(
-			await
-				send_request(
-					'log out'
-				)
-		)
-	}
+			send_request(
+				'log out'
+			)
+	)
 }
